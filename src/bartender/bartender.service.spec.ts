@@ -16,6 +16,11 @@ describe('BartenderService', () => {
           useValue: {
             table: {
               findUnique: jest.fn(),
+              // Mocking the table collection to include a "table"
+              findMany: jest.fn().mockResolvedValue([
+                { id: '1', name: 'Table 1' },
+                { id: '2', name: 'Table 2' },
+              ]),
             },
             category: {
               findMany: jest.fn(),
@@ -31,7 +36,7 @@ describe('BartenderService', () => {
 
   describe('getTable', () => {
     it('should return table info when found', async () => {
-      const mockTable = {
+      const mockTable: { id: string; establishment: { id: string; name: string } } = {
         id: '123',
         establishment: { id: '1', name: 'Test Establishment' },
       };

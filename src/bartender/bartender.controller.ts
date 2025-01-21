@@ -27,4 +27,12 @@ export class BartenderController {
 
     return this.bartender.getCarte(id, page, limit);
   }
+
+  getDrinks(): string[] {
+    return ['Mojito', 'Martini'];
+  }
+
+  addDrink(drink: string): string {
+    return drink;
+  }
 }

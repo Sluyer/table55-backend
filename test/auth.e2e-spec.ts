@@ -42,4 +42,31 @@ describe('AuthController (e2e)', () => {
     expect(createdUser).toBeDefined();
     expect(createdUser?.username).toBe(userPayload.username);
   });
+
+  it('/auth/login (POST) should login an existing user', async () => {
+    const userPayload = {
+      username: 'testuser',
+      password: 'testpassword',
+    };
+
+    await request(app.getHttpServer())
+      .post('/auth/login')
+      .send(userPayload)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body).toHaveProperty('access_token');
+      });
+  });
+
+  it('/auth/register (POST) should not allow duplicate registration', async () => {
+    const userPayload = {
+      username: 'testuser',
+      password: 'testpassword',
+    };
+
+    await request(app.getHttpServer())
+      .post('/auth/register')
+      .send(userPayload)
+      .expect(400);
+  });
 });

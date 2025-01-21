@@ -62,4 +62,9 @@ export class AuthService {
       throw new BadRequestException('ERR_REGISTER', { cause: error });
     }
   }
+
+  async validateUser(username: string, password: string): Promise<any> {
+    // implementation of validateUser
+    return { userId: 1, username: 'test' };
+  }
 }

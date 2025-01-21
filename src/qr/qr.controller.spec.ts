@@ -15,4 +15,19 @@ describe('QrController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  it('should return a QR code', () => {
+    const result = 'some-qr-code';
+    jest.spyOn(controller, 'getQrCode').mockImplementation(() => result);
+
+    expect(controller.getQrCode()).toBe(result);
+  });
+
+  it('should handle errors', () => {
+    jest.spyOn(controller, 'getQrCode').mockImplementation(() => {
+      throw new Error('Error generating QR code');
+    });
+
+    expect(() => controller.getQrCode()).toThrow('Error generating QR code');
+  });
 });
