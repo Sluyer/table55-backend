@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id             Int             @id @default(autoincrement())
+  email          String          @unique
+  surname        String
+  lastname       String
+  hashedPassword String
+  phone          String?
+  createdAt      DateTime        @default(now())
+  Establishment  Establishment[]
+}
+
+model Establishment {
+  id          String     @id @default(uuid())
+  name        String
+  description String
+  phone       String
+  address     String
+  coordinates String?
+  createdAt   DateTime   @default(now())
+  userId      Int
+  user        User       @relation(fields: [userId], references: [id])
+  Item        Item[]
+  Order       Order[]
+  Table       Table[]
+  Category    Category[]
+}
+
+model Table {
+  id              String        @id @default(uuid())
+  name            String
+  qrColor         String
+  establishment   Establishment @relation(fields: [establishmentId], references: [id])
+  establishmentId String
+  createdAt       DateTime      @default(now())
+  Order           Order[]
+}
+
+model Category {
+  id              Int           @id @default(autoincrement())
+  establishmentId String
+  establishment   Establishment @relation(fields: [establishmentId], references: [id])
+  name            String
+  description     String
+  createdAt       DateTime      @default(now())
+  Item            Item[]
+}
+
+// Items, like food and drinks linked to each establishment, they all have a price, image, name, description, and category
+model Item {
+  id              Int           @id @default(autoincrement())
+  name            String
+  description     String
+  price           Float
+  image           String
+  isAlcoholic     Boolean
+  establishment   Establishment @relation(fields: [establishmentId], references: [id])
+  establishmentId String
+  createdAt       DateTime      @default(now())
+  Category        Category?     @relation(fields: [categoryId], references: [id])
+  categoryId      Int?
+  OrderItems      OrderItems[]
+}
+
+model Order {
+  id              Int           @id @default(autoincrement())
+  phone           String // phone number of the user
+  tableId         String
+  table           Table         @relation(fields: [tableId], references: [id])
+  establishmentId String
+  establishment   Establishment @relation(fields: [establishmentId], references: [id])
+  OrderItems      OrderItems[]
+}
+
+model OrderItems {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  order     Order    @relation(fields: [orderId], references: [id])
+  itemId    Int
+  item      Item     @relation(fields: [itemId], references: [id])
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+}
